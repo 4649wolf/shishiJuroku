@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf9f6">
+  <meta name="description" content="獅子獣録は、週間・月間の配信予定表を作り、配信者の紹介文を管理できる無料のブラウザツールです。">
+  <title>獅子獣録 — 配信の準備を、ひとつの場所で。</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="alternate icon" href="./assets/favicon.ico">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./model.js" defer></script>
+  <script src="./renderer.js" defer></script>
+  <script src="./storage.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">メインコンテンツへ</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="メインナビゲーション">
+      <a class="brand" href="#schedule" aria-label="獅子獣録 ホーム"><img src="./assets/favicon.svg" alt="" width="38" height="38"><span>獅子獣録<small>CREATOR WORKSPACE</small></span></a>
+      <div class="workspace-label">ワークスペース</div>
+      <nav class="main-nav">
+        <button class="nav-item active" data-page="schedule"><span data-icon="calendar"></span><span>予定表をつくる</span></button>
+        <button class="nav-item" data-page="people"><span data-icon="users"></span><span>配信者・紹介文</span></button>
+        <button class="nav-item" data-page="history"><span data-icon="history"></span><span>作成履歴</span><span class="nav-count" id="history-count">0</span></button>
+        <button class="nav-item mobile-nav-item" id="mobile-help"><span data-icon="help"></span><span>使い方・保存</span></button>
+      </nav>
+      <div class="sidebar-note"><span class="note-mark" data-icon="sparkles"></span><strong>いつもの配信に、<br>ちょっといい準備を。</strong><p>予定を整えて、<br>あなたらしく届けよう。</p><span class="note-decoration">✳</span></div>
+      <div class="sidebar-bottom">
+        <button class="nav-item" id="backup-button"><span data-icon="download"></span><span>バックアップ</span></button>
+        <button class="nav-item" id="help-button"><span data-icon="help"></span><span>使い方・データについて</span></button>
+        <div class="local-indicator"><span></span>データはこのブラウザに保存</div>
+        <small class="version-label">SHISHIJUROKU / v1.0</small>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar"><div class="breadcrumb"><span>ワークスペース</span><span class="slash">/</span><strong id="breadcrumb-current">予定表をつくる</strong></div><div class="topbar-right"><span id="save-status" role="status"><span class="status-dot"></span>準備中</span><button class="avatar" id="profile-shortcut" title="自分の配信者情報を登録" aria-label="自分の配信者情報を登録"><span data-icon="user"></span></button></div></header>
+      <main id="main" tabindex="-1">
+        <section id="page-schedule" class="page">
+          <div class="page-heading"><div><div class="eyebrow">SCHEDULE STUDIO</div><h1>予定表をつくる<span class="heading-dot">.</span></h1><p>配信の楽しみを、一枚にまとめよう。</p></div><div class="heading-actions"><button class="button secondary" id="save-history"><span data-icon="save"></span>履歴に保存</button><button class="button primary" id="export-button"><span data-icon="download"></span>PNGで書き出す</button></div></div>
+          <div class="studio-bar"><div class="segmented" aria-label="予定表の期間"><button data-mode="week" class="active" aria-pressed="true">1週間</button><button data-mode="month" aria-pressed="false">1か月</button></div><div class="period-nav"><button class="icon-button" id="previous-period" aria-label="前の期間"><span data-icon="chevron-left"></span></button><button id="period-button" class="period-button" title="日付を指定"><span id="period-label"></span><span data-icon="chevron-down"></span></button><button class="icon-button" id="next-period" aria-label="次の期間"><span data-icon="chevron-right"></span></button><button id="today-button" class="button tiny">今週</button></div><button class="button template-launch" id="templates-button"><span data-icon="grid"></span>テンプレート<span class="template-count">12</span></button></div>
+          <div class="studio-grid">
+            <section class="canvas-panel" aria-label="予定表プレビュー">
+              <div class="canvas-panel-top"><span><span class="tiny-dot"></span>ライブプレビュー</span><span class="canvas-size" id="canvas-size">1600 × 1000 px</span></div>
+              <div class="canvas-workspace"><div class="canvas-wrap" id="canvas-wrap"><canvas id="schedule-canvas" width="1600" height="1000" tabindex="0" aria-label="予定表プレビュー。日付を押して予定を追加。画像はドラッグで移動できます。"></canvas><div id="selection-box" class="selection-box" hidden><span class="selection-label">選択中</span><span class="resize-handle" aria-hidden="true"></span></div></div></div>
+              <div class="canvas-footer"><span><span data-icon="mouse"></span><span id="canvas-tip">日付をクリックして予定を編集</span></span><button class="text-button" id="preview-button"><span data-icon="expand"></span>大きく見る</button></div>
+              <div class="quick-strip"><div><span data-icon="calendar-check"></span><strong id="event-count">0 件の配信予定</strong><span class="muted">を編集中</span></div><button class="text-button" id="copy-schedule"><span data-icon="copy"></span>告知文をコピー</button></div>
+              <div class="studio-hint"><span data-icon="shield"></span><p>編集内容は自動保存されます。大切なデータは「バックアップ」からダウンロードできます。</p></div>
+            </section>
+            <aside class="inspector" aria-label="予定表の編集パネル">
+              <div class="inspector-tabs" role="tablist" aria-label="編集項目"><button role="tab" aria-selected="true" class="active" data-inspector="events"><span data-icon="list"></span>予定</button><button role="tab" aria-selected="false" data-inspector="design"><span data-icon="palette"></span>デザイン</button><button role="tab" aria-selected="false" data-inspector="items"><span data-icon="layers"></span>アイテム</button></div>
+              <div id="inspector-content" class="inspector-content"></div>
+            </aside>
+          </div>
+        </section>
+        <section id="page-people" class="page" hidden></section>
+        <section id="page-history" class="page" hidden></section>
+      </main>
+      <footer class="app-footer"><span>獅子獣録</span><span>Made for your next stream.</span></footer>
+    </div>
+  </div>
+  <dialog id="modal" aria-labelledby="modal-title"><div class="modal-header"><div><div id="modal-eyebrow" class="eyebrow"></div><h2 id="modal-title"></h2></div><button class="icon-button" id="close-modal" aria-label="閉じる"><span data-icon="x"></span></button></div><div id="modal-body"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <input type="file" id="image-upload" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+  <input type="file" id="backup-upload" accept=".json,application/json" hidden>
+  <noscript><div class="noscript">このツールを利用するにはJavaScriptを有効にしてください。</div></noscript>
+</body>
+</html>
